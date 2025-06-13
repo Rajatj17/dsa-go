@@ -40,6 +40,6 @@ func FrogJumpTopDown(arr []int) int {
 
 		dp[i] = min(op1, op2)
 	}
-	// Prefill []
-	return 1
+
+	return dp[len(arr)-1]
 }
