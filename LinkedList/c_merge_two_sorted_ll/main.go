@@ -1,0 +1,5 @@
+package mergetwosortedll
+
+func MergeTwoSortedLL() {
+
+}
