@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Programming Visualizations</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            padding: 40px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .algorithm-section {
+            margin-bottom: 60px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-left: 5px solid #3498db;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .memory-aid {
+            background: linear-gradient(135deg, #ffeaa7, #fab1a0);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px solid #e17055;
+            font-weight: bold;
+            color: #2d3436;
+        }
+
+        .visualization {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dp-table {
+            margin: 20px 0;
+            border-collapse: collapse;
+            width: 100%;
+            background: white;
+        }
+
+        .dp-table th, .dp-table td {
+            border: 2px solid #34495e;
+            padding: 12px;
+            text-align: center;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .dp-table th {
+            background: #3498db;
+            color: white;
+        }
+
+        .dp-table td {
+            background: #ecf0f1;
+            cursor: pointer;
+        }
+
+        .dp-table td:hover {
+            background: #f1c40f;
+            transform: scale(1.05);
+        }
+
+        .highlighted {
+            background: #e74c3c !important;
+            color: white !important;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .controls {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        button {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            margin: 0 10px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(116, 185, 255, 0.4);
+        }
+
+        button:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .step-info {
+            background: #dff9fb;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #00b894;
+        }
+
+        .code-snippet {
+            background: #2d3436;
+            color: #ddd;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+
+        .knapsack-items {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .item {
+            background: #74b9ff;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .item.selected {
+            background: #00b894;
+            animation: bounce 0.5s ease;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .legend {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧠 Dynamic Programming Visualizations</h1>
+        
+        <!-- Knapsack Problem -->
+        <div class="algorithm-section">
+            <h2>🎒 Knapsack Problem</h2>
+            
+            <div class="memory-aid">
+                <strong>Memory Aid:</strong> Think of packing a backpack for a trip! You have limited space (maxWeight) and want to maximize the value of items you pack. Each cell in the table answers: "What's the maximum value I can get with the first i items and weight limit j?"
+            </div>
+
+            <div class="visualization">
+                <h3>Items Available:</h3>
+                <div class="knapsack-items" id="knapsackItems">
+                    <div class="item">Item 1<br>W:2, V:2</div>
+                    <div class="item">Item 2<br>W:4, V:3</div>
+                    <div class="item">Item 3<br>W:5, V:5</div>
+                    <div class="item">Item 4<br>W:6, V:7</div>
+                    <div class="item">Item 5<br>W:7, V:4</div>
+                </div>
+
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #ecf0f1;"></div>
+                        <span>Empty/Base Case</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #f1c40f;"></div>
+                        <span>Current Cell</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #e74c3c;"></div>
+                        <span>Optimal Choice</span>
+                    </div>
+                </div>
+
+                <table class="dp-table" id="knapsackTable">
+                    <thead>
+                        <tr>
+                            <th>Items\\Weight</th>
+                            <th>0</th>
+                            <th>1</th>
+                            <th>2</th>
+                            <th>3</th>
+                            <th>4</th>
+                            <th>5</th>
+                            <th>6</th>
+                            <th>7</th>
+                            <th>8</th>
+                            <th>9</th>
+                            <th>10</th>
+                        </tr>
+                    </thead>
+                    <tbody id="knapsackTableBody">
+                    </tbody>
+                </table>
+
+                <div class="controls">
+                    <button onclick="stepKnapsack()">Next Step</button>
+                    <button onclick="resetKnapsack()">Reset</button>
+                    <button onclick="autoSolveKnapsack()">Auto Solve</button>
+                </div>
+
+                <div class="step-info" id="knapsackStepInfo">
+                    Click "Next Step" to see how the algorithm fills the table step by step!
+                </div>
+            </div>
+        </div>
+
+        <!-- Subset Sum Problem -->
+        <div class="algorithm-section">
+            <h2>🎯 Subset Sum Problem</h2>
+            
+            <div class="memory-aid">
+                <strong>Memory Aid:</strong> Think of it as a "Yes/No" question game! Each cell asks: "Can I make sum j using the first i elements?" It's like asking "Can I make exact change?" with specific coins.
+            </div>
+
+            <div class="visualization">
+                <h3>Array: [1, 2, 3, 4, 6] | Target Sum: 7</h3>
+                
+                <div class="knapsack-items" id="subsetItems">
+                    <div class="item">1</div>
+                    <div class="item">2</div>
+                    <div class="item">3</div>
+                    <div class="item">4</div>
+                    <div class="item">6</div>
+                </div>
+
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #e74c3c;"></div>
+                        <span>TRUE (Sum Possible)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #95a5a6;"></div>
+                        <span>FALSE (Sum Not Possible)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #f1c40f;"></div>
+                        <span>Current Cell</span>
+                    </div>
+                </div>
+
+                <table class="dp-table" id="subsetTable">
+                    <thead>
+                        <tr>
+                            <th>Elements\\Sum</th>
+                            <th>0</th>
+                            <th>1</th>
+                            <th>2</th>
+                            <th>3</th>
+                            <th>4</th>
+                            <th>5</th>
+                            <th>6</th>
+                            <th>7</th>
+                        </tr>
+                    </thead>
+                    <tbody id="subsetTableBody">
+                    </tbody>
+                </table>
+
+                <div class="controls">
+                    <button onclick="stepSubset()">Next Step</button>
+                    <button onclick="resetSubset()">Reset</button>
+                    <button onclick="autoSolveSubset()">Auto Solve</button>
+                </div>
+
+                <div class="step-info" id="subsetStepInfo">
+                    Click "Next Step" to see how we determine if subsets can make the target sum!
+                </div>
+            </div>
+        </div>
+
+        <!-- Code Explanations -->
+        <div class="algorithm-section">
+            <h2>🔍 Code Pattern Recognition</h2>
+            
+            <div class="memory-aid">
+                <strong>Universal DP Pattern:</strong>
+                <br>1. <strong>Base Case:</strong> What happens when we have 0 items or 0 capacity?
+                <br>2. <strong>Choice:</strong> For each item, we have 2 options - include it or exclude it
+                <br>3. <strong>Optimal:</strong> Pick the better option (max for knapsack, OR for subset sum)
+            </div>
+
+            <div class="code-snippet">
+// Universal DP Template
+if (baseCase) return baseValue;
+if (cached) return cache[state];
+
+if (canIncludeCurrentItem) {
+    // Choice 1: Include current item
+    include = value[current] + solve(remaining_items, reduced_capacity);
+    // Choice 2: Exclude current item  
+    exclude = solve(remaining_items, same_capacity);
+    
+    result = chooseOptimal(include, exclude);
+} else {
+    // Must exclude current item
+    result = solve(remaining_items, same_capacity);
+}
+
+cache[state] = result;
+return result;
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Knapsack Problem Variables
+        const weights = [2, 4, 5, 6, 7];
+        const values = [2, 3, 5, 7, 4];
+        const maxWeight = 10;
+        let knapsackStep = 0;
+        let knapsackTable = [];
+        let knapsackCurrentI = 0;
+        let knapsackCurrentJ = 0;
+
+        // Subset Sum Variables
+        const subsetArray = [1, 2, 3, 4, 6];
+        const targetSum = 7;
+        let subsetStep = 0;
+        let subsetTable = [];
+        let subsetCurrentI = 0;
+        let subsetCurrentJ = 0;
+
+        function initializeKnapsack() {
+            const tableBody = document.getElementById('knapsackTableBody');
+            tableBody.innerHTML = '';
+            
+            knapsackTable = [];
+            for (let i = 0; i <= weights.length; i++) {
+                knapsackTable[i] = [];
+                const row = document.createElement('tr');
+                
+                // Row header
+                const header = document.createElement('th');
+                header.textContent = i === 0 ? '0 items' : `${i} items`;
+                header.style.background = '#34495e';
+                header.style.color = 'white';
+                row.appendChild(header);
+                
+                for (let j = 0; j <= maxWeight; j++) {
+                    const cell = document.createElement('td');
+                    cell.id = `knapsack-${i}-${j}`;
+                    
+                    if (i === 0 || j === 0) {
+                        knapsackTable[i][j] = 0;
+                        cell.textContent = '0';
+                        cell.style.background = '#bdc3c7';
+                    } else {
+                        knapsackTable[i][j] = -1;
+                        cell.textContent = '?';
+                    }
+                    
+                    row.appendChild(cell);
+                }
+                tableBody.appendChild(row);
+            }
+            
+            knapsackStep = 0;
+            knapsackCurrentI = 1;
+            knapsackCurrentJ = 1;
+        }
+
+        function stepKnapsack() {
+            if (knapsackCurrentI > weights.length) {
+                document.getElementById('knapsackStepInfo').innerHTML = 
+                    '<strong>🎉 Complete!</strong> Maximum value achievable is: ' + 
+                    knapsackTable[weights.length][maxWeight];
+                return;
+            }
+
+            const cell = document.getElementById(`knapsack-${knapsackCurrentI}-${knapsackCurrentJ}`);
+            cell.style.background = '#f1c40f';
+            
+            const currentWeight = weights[knapsackCurrentI - 1];
+            const currentValue = values[knapsackCurrentI - 1];
+            
+            let result;
+            let explanation;
+            
+            if (currentWeight > knapsackCurrentJ) {
+                // Can't include current item
+                result = knapsackTable[knapsackCurrentI - 1][knapsackCurrentJ];
+                explanation = `Item ${knapsackCurrentI} (weight: ${currentWeight}) is too heavy for capacity ${knapsackCurrentJ}. Take previous best: ${result}`;
+            } else {
+                // Can include current item
+                const include = currentValue + knapsackTable[knapsackCurrentI - 1][knapsackCurrentJ - currentWeight];
+                const exclude = knapsackTable[knapsackCurrentI - 1][knapsackCurrentJ];
+                result = Math.max(include, exclude);
+                
+                explanation = `Item ${knapsackCurrentI} (weight: ${currentWeight}, value: ${currentValue})<br>` +
+                    `Include: ${currentValue} + ${knapsackTable[knapsackCurrentI - 1][knapsackCurrentJ - currentWeight]} = ${include}<br>` +
+                    `Exclude: ${exclude}<br>` +
+                    `Choose maximum: ${result}`;
+            }
+            
+            knapsackTable[knapsackCurrentI][knapsackCurrentJ] = result;
+            cell.textContent = result;
+            cell.style.background = '#e74c3c';
+            
+            document.getElementById('knapsackStepInfo').innerHTML = explanation;
+            
+            // Move to next cell
+            knapsackCurrentJ++;
+            if (knapsackCurrentJ > maxWeight) {
+                knapsackCurrentJ = 1;
+                knapsackCurrentI++;
+            }
+        }
+
+        function resetKnapsack() {
+            initializeKnapsack();
+            document.getElementById('knapsackStepInfo').textContent = 
+                'Click "Next Step" to see how the algorithm fills the table step by step!';
+        }
+
+        function autoSolveKnapsack() {
+            const interval = setInterval(() => {
+                stepKnapsack();
+                if (knapsackCurrentI > weights.length) {
+                    clearInterval(interval);
+                }
+            }, 500);
+        }
+
+        function initializeSubset() {
+            const tableBody = document.getElementById('subsetTableBody');
+            tableBody.innerHTML = '';
+            
+            subsetTable = [];
+            for (let i = 0; i <= subsetArray.length; i++) {
+                subsetTable[i] = [];
+                const row = document.createElement('tr');
+                
+                // Row header
+                const header = document.createElement('th');
+                header.textContent = i === 0 ? '0 elements' : `${i} elements`;
+                header.style.background = '#34495e';
+                header.style.color = 'white';
+                row.appendChild(header);
+                
+                for (let j = 0; j <= targetSum; j++) {
+                    const cell = document.createElement('td');
+                    cell.id = `subset-${i}-${j}`;
+                    
+                    if (j === 0) {
+                        subsetTable[i][j] = true;
+                        cell.textContent = 'T';
+                        cell.style.background = '#e74c3c';
+                    } else if (i === 0) {
+                        subsetTable[i][j] = false;
+                        cell.textContent = 'F';
+                        cell.style.background = '#95a5a6';
+                    } else {
+                        subsetTable[i][j] = null;
+                        cell.textContent = '?';
+                    }
+                    
+                    row.appendChild(cell);
+                }
+                tableBody.appendChild(row);
+            }
+            
+            subsetStep = 0;
+            subsetCurrentI = 1;
+            subsetCurrentJ = 1;
+        }
+
+        function stepSubset() {
+            if (subsetCurrentI > subsetArray.length) {
+                const finalResult = subsetTable[subsetArray.length][targetSum];
+                document.getElementById('subsetStepInfo').innerHTML = 
+                    `<strong>🎉 Complete!</strong> Can we make sum ${targetSum}? <strong>${finalResult ? 'YES' : 'NO'}</strong>`;
+                return;
+            }
+
+            const cell = document.getElementById(`subset-${subsetCurrentI}-${subsetCurrentJ}`);
+            cell.style.background = '#f1c40f';
+            
+            const currentElement = subsetArray[subsetCurrentI - 1];
+            let result;
+            let explanation;
+            
+            if (currentElement > subsetCurrentJ) {
+                // Can't include current element
+                result = subsetTable[subsetCurrentI - 1][subsetCurrentJ];
+                explanation = `Element ${currentElement} > target sum ${subsetCurrentJ}. Take previous result: ${result ? 'TRUE' : 'FALSE'}`;
+            } else {
+                // Can include current element
+                const include = subsetTable[subsetCurrentI - 1][subsetCurrentJ - currentElement];
+                const exclude = subsetTable[subsetCurrentI - 1][subsetCurrentJ];
+                result = include || exclude;
+                
+                explanation = `Element ${currentElement} ≤ target sum ${subsetCurrentJ}<br>` +
+                    `Include: Can we make ${subsetCurrentJ - currentElement}? ${include ? 'TRUE' : 'FALSE'}<br>` +
+                    `Exclude: Can we make ${subsetCurrentJ}? ${exclude ? 'TRUE' : 'FALSE'}<br>` +
+                    `Result: ${result ? 'TRUE' : 'FALSE'}`;
+            }
+            
+            subsetTable[subsetCurrentI][subsetCurrentJ] = result;
+            cell.textContent = result ? 'T' : 'F';
+            cell.style.background = result ? '#e74c3c' : '#95a5a6';
+            
+            document.getElementById('subsetStepInfo').innerHTML = explanation;
+            
+            // Move to next cell
+            subsetCurrentJ++;
+            if (subsetCurrentJ > targetSum) {
+                subsetCurrentJ = 1;
+                subsetCurrentI++;
+            }
+        }
+
+        function resetSubset() {
+            initializeSubset();
+            document.getElementById('subsetStepInfo').textContent = 
+                'Click "Next Step" to see how we determine if subsets can make the target sum!';
+        }
+
+        function autoSolveSubset() {
+            const interval = setInterval(() => {
+                stepSubset();
+                if (subsetCurrentI > subsetArray.length) {
+                    clearInterval(interval);
+                }
+            }, 500);
+        }
+
+        // Initialize both visualizations
+        initializeKnapsack();
+        initializeSubset();
+    </script>
+</body>
+</html>

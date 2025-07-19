@@ -1,0 +1,59 @@
+package main
+
+/*
+Problem: Letter Combinations of a Phone Number
+
+Description:
+Given a string containing digits from 2-9 inclusive, return all possible letter combinations that the number could represent. Return the answer in any order.
+
+A mapping of digit to letters (just like on the telephone buttons) is given below. Note that 1 does not map to any letters.
+
+2: abc
+3: def
+4: ghi
+5: jkl
+6: mno
+7: pqrs
+8: tuv
+9: wxyz
+
+Example 1:
+Input: digits = "23"
+Output: ["ad","ae","af","bd","be","bf","cd","ce","cf"]
+
+Example 2:
+Input: digits = ""
+Output: []
+
+Example 3:
+Input: digits = "2"
+Output: ["a","b","c"]
+
+Constraints:
+- 0 <= digits.length <= 4
+- digits[i] is a digit in the range ['2', '9']
+
+LeetCode Link: https://leetcode.com/problems/letter-combinations-of-a-phone-number/
+
+Companies: Amazon, Microsoft, Google, Apple, Facebook, Bloomberg, Adobe, Uber
+
+Time Complexity: O(4^n) where n is the length of digits
+Space Complexity: O(4^n) for storing all combinations
+
+Related Problems:
+- Generate Parentheses
+- Combination Sum
+- Permutations
+- Word Search
+
+Note: Multiple list approach with backtracking:
+1. Create a mapping of digits to letters
+2. Use backtracking to generate all combinations
+3. For each digit, try all possible letters
+
+Key insight: This is a classic backtracking problem where we make choices at each level.
+*/
+
+func main() {
+	// TODO: Implement the solution
+}

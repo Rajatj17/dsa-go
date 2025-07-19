@@ -1,6 +1,6 @@
 package main
 
-var dataCache = [][]int{{}}
+var dp = [][]int{{}}
 
 /*
 *
@@ -16,22 +16,22 @@ func knapsackProblem(price []int, weight []int, n int, maxWeight int) int {
 		return 0
 	}
 
-	if dataCache[n][maxWeight] != -1 {
-		return dataCache[n][maxWeight]
+	if dp[n][maxWeight] != -1 {
+		return dp[n][maxWeight]
 	}
 
 	if weight[n-1] > maxWeight {
-		dataCache[n][maxWeight] = knapsackProblem(price, weight, n-1, maxWeight)
+		dp[n][maxWeight] = knapsackProblem(price, weight, n-1, maxWeight)
 
-		return dataCache[n][maxWeight]
+		return dp[n][maxWeight]
 	}
 
-	dataCache[n][maxWeight] = max(
+	dp[n][maxWeight] = max(
 		price[n-1]+knapsackProblem(price, weight, n-1, maxWeight-weight[n-1]),
 		knapsackProblem(price, weight, n-1, maxWeight),
 	)
 
-	return dataCache[n][maxWeight]
+	return dp[n][maxWeight]
 }
 
 func main() {
