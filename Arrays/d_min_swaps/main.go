@@ -7,6 +7,7 @@ import "slices"
 // Examples:
 
 // Input: arr[] = [2, 8, 5, 4]
+//                [2, 4, 5, 8] - {2-0, 4-1, 5-2, 8-3}
 // Output: 1
 // Explanation: Swap 8 with 4 to get the sorted array.
 
